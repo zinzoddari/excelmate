@@ -1,5 +1,6 @@
 plugins {
     id("java")
+    id("java-library")
     id("maven-publish")
 }
 
@@ -20,4 +21,18 @@ dependencies {
 
 tasks.test {
     useJUnitPlatform()
+}
+
+publishing {
+    publications {
+        create<MavenPublication>("release") {
+            groupId = group.toString()
+            artifactId = "excelmate"
+            version = version.toString()
+
+            afterEvaluate {
+                from(components["java"])
+            }
+        }
+    }
 }
