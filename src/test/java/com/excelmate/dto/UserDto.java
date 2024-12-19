@@ -1,5 +1,6 @@
 package com.excelmate.dto;
 
+import com.excelmate.domain.ExcelFont;
 import com.excelmate.domain.ExcelHeader;
 
 public class UserDto {
@@ -10,6 +11,7 @@ public class UserDto {
     @ExcelHeader("이메일")
     private String email;
 
+    @ExcelFont(bold = true)
     @ExcelHeader("이름")
     private String name;
 
