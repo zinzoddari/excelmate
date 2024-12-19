@@ -1,6 +1,9 @@
 package com.excelmate;
 
+import com.excelmate.domain.ExcelFont;
 import com.excelmate.domain.ExcelHeader;
+import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.CellStyle;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
@@ -39,9 +42,23 @@ public final class SheetMate {
             // 헤더 생성
             Row headerRow = sheet.createRow(0);
             for (int i = 0; i < fields.length; i++) {
-                ExcelHeader headerAnnotation = fields[i].getAnnotation(ExcelHeader.class);
-                final String headerName = headerAnnotation != null ? headerAnnotation.value() : fields[i].getName();
-                headerRow.createCell(i).setCellValue(headerName);
+                Field field = fields[i];
+                Cell cell = headerRow.createCell(i);
+                if (field.isAnnotationPresent(ExcelHeader.class)) {
+                    ExcelHeader headerAnnotation = field.getAnnotation(ExcelHeader.class);
+                    final String headerName = headerAnnotation != null ? headerAnnotation.value() : field.getName();
+
+                    cell.setCellValue(headerName);
+                }
+
+                if (field.isAnnotationPresent(ExcelFont.class)) {
+                    ExcelFont fontAnnotation = field.getAnnotation(ExcelFont.class);
+                    final boolean isBold = fontAnnotation.bold();
+
+                    final CellStyle cellStyle = FontMaker.bold(workbook, isBold);
+                    cell.setCellStyle(cellStyle);
+                    System.out.println("Zz");
+                }
             }
 
             // 데이터 추가
