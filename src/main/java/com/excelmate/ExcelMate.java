@@ -8,15 +8,16 @@ import java.util.List;
 
 public final class ExcelMate {
 
-    private <T> void create(final String sheetName, final List<T> data, OutputStream outputStream) throws IOException {
-        SheetMate.generate(sheetName, data, outputStream);
+    private <T> void create(final String sheetName, final Class<T> tClass, final List<T> data, OutputStream outputStream) throws IOException {
+        final SheetMate sheetMate = new SheetMate(tClass, data);
+        sheetMate.generate(sheetName, outputStream);
     }
 
-    public <T> void download(final String sheetName, final List<T> data, OutputStream outputStream) throws IOException {
-        create(sheetName, data, outputStream);
+    public <T> void download(final String sheetName, final Class<T> tClass, final List<T> data, OutputStream outputStream) throws IOException {
+        create(sheetName, tClass, data, outputStream);
     }
 
-    public <T> String download(final String sheetName, final List<T> data) throws IOException {
+    public <T> String download(final String sheetName, final Class<T> tClass, final List<T> data) throws IOException {
         final String tempDirPath = System.getProperty("java.io.tmpdir") + "excelmate";
         final File tempDir = new File(tempDirPath);
 
@@ -31,7 +32,7 @@ public final class ExcelMate {
 
         OutputStream outputStream = new FileOutputStream(tempFile);
 
-        create(sheetName, data, outputStream);
+        create(sheetName, tClass, data, outputStream);
 
         return tempFile.getPath();
     }

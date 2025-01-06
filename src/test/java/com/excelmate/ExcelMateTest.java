@@ -10,7 +10,7 @@ import java.io.OutputStream;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 
 class ExcelMateTest {
     private List<UserDto> exampleList;
@@ -29,13 +29,13 @@ class ExcelMateTest {
         OutputStream outputStream = new FileOutputStream("temp.xlsx");
 
         //when
-        excelMate.download("sheetName", exampleList, outputStream);
+        excelMate.download("sheetName", UserDto.class, exampleList, outputStream);
     }
 
     @Test
     void tempDownload() throws IOException {
         //when
-        String result = excelMate.download("temrp", exampleList);
+        String result = excelMate.download("temrp", UserDto.class, exampleList);
 
         //then
         assertThat(result).isNotNull();
@@ -44,7 +44,7 @@ class ExcelMateTest {
     @Test
     void tempDelete() throws IOException {
         //given
-        String path = excelMate.download("temrp", exampleList);
+        String path = excelMate.download("temrp", UserDto.class, exampleList);
 
         //when & then
         assertDoesNotThrow(() -> excelMate.removeTempFile(path));

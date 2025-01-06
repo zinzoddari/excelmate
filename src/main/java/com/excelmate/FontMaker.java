@@ -1,16 +1,19 @@
 package com.excelmate;
 
+import com.excelmate.domain.ExcelFont;
 import org.apache.poi.ss.usermodel.CellStyle;
 import org.apache.poi.ss.usermodel.Font;
-import org.apache.poi.ss.usermodel.Workbook;
+
+import java.lang.reflect.Field;
 
 public class FontMaker {
 
-    public static CellStyle bold(final Workbook workbook, final boolean isBold) {
-        Font headerFont = workbook.createFont();
+    public static CellStyle bold(final Field field, Font headerFont, CellStyle headerStyle) {
+        ExcelFont fontAnnotation = field.getAnnotation(ExcelFont.class);
+        final boolean isBold = fontAnnotation.bold();
+
         headerFont.setBold(isBold);
 
-        CellStyle headerStyle = workbook.createCellStyle();
         headerStyle.setFont(headerFont);
 
         return headerStyle;
