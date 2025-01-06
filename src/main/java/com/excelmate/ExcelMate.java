@@ -8,11 +8,6 @@ import java.util.List;
 
 public final class ExcelMate {
 
-    private <T> void create(final String sheetName, final Class<T> tClass, final List<T> data, OutputStream outputStream) throws IOException {
-        final SheetMate sheetMate = new SheetMate(tClass, data);
-        sheetMate.generate(sheetName, outputStream);
-    }
-
     public <T> void download(final String sheetName, final Class<T> tClass, final List<T> data, OutputStream outputStream) throws IOException {
         create(sheetName, tClass, data, outputStream);
     }
@@ -41,5 +36,10 @@ public final class ExcelMate {
         final File tempDir = new File(path);
 
         tempDir.delete();
+    }
+
+    private <T> void create(final String sheetName, final Class<T> tClass, final List<T> data, OutputStream outputStream) throws IOException {
+        final SheetMate sheetMate = new SheetMate(tClass, data);
+        sheetMate.generate(sheetName, outputStream);
     }
 }
