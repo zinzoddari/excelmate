@@ -9,8 +9,8 @@ import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.xssf.streaming.SXSSFWorkbook;
 
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.OutputStream;
 import java.lang.reflect.Field;
 import java.util.List;
 
@@ -21,18 +21,13 @@ public final class SheetMate {
 
     /**
      * 엑셀을 생성합니다.
-     * @param sheetName
-     * @param data
-     * @return
-     * @param <T>
-     * @throws IOException
      */
-    public static <T> byte[] generate(final String sheetName, final List<T> data) throws IOException {
+    public static <T> void generate(final String sheetName, final List<T> data, OutputStream outputStream) throws IOException {
         if (data.isEmpty()) {
             throw new IllegalArgumentException("데이터가 비어 있습니다.");
         }
 
-        try (Workbook workbook = new SXSSFWorkbook(); ByteArrayOutputStream outputStream = new ByteArrayOutputStream()) {
+        try (Workbook workbook = new SXSSFWorkbook()) {
 
             Sheet sheet = workbook.createSheet(sheetName);
 
@@ -57,7 +52,6 @@ public final class SheetMate {
 
                     final CellStyle cellStyle = FontMaker.bold(workbook, isBold);
                     cell.setCellStyle(cellStyle);
-                    System.out.println("Zz");
                 }
             }
 
@@ -77,7 +71,6 @@ public final class SheetMate {
             }
 
             workbook.write(outputStream);
-            return outputStream.toByteArray();
         }
     }
 }
