@@ -17,13 +17,13 @@ public final class SheetMate<T> {
     private final List<T> data;
 
     private final HeaderGenerator headerGenerator;
-    private final DataPopulator dataPopulator;
+    private final DataPopulator<T> dataPopulator;
 
     public SheetMate(Class<T> dtoClass, List<T> data) {
         this.dtoClass = dtoClass;
         this.data = data;
         this.headerGenerator = new HeaderGenerator();
-        this.dataPopulator = new DataPopulator(data);
+        this.dataPopulator = new DataPopulator<>(data);
     }
 
     /**
@@ -44,7 +44,7 @@ public final class SheetMate<T> {
             headerGenerator.generateHeader(sheet.createRow(0), fields, workbook);
 
             // 데이터 추가
-            dataPopulator.populate(sheet, fields);
+            dataPopulator.populate(sheet, fields, workbook);
 
             workbook.write(outputStream);
         }

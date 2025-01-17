@@ -1,6 +1,9 @@
 package com.excelmate;
 
 import com.excelmate.dto.UserDto;
+import java.io.File;
+import java.nio.file.Files;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -13,8 +16,10 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 
 class ExcelMateTest {
+    private static final String FILE_NAME = "temp.xlsx";
+
     private List<UserDto> exampleList;
-    private ExcelMate excelMate = new ExcelMate();
+    private final ExcelMate excelMate = new ExcelMate();
 
     @BeforeEach
     void init() {
@@ -23,10 +28,16 @@ class ExcelMateTest {
         );
     }
 
+    @AfterEach
+    void cleanUp() throws IOException {
+        Files.deleteIfExists(new File(FILE_NAME).toPath());
+    }
+
+
     @Test
     void download() throws IOException {
         //given
-        OutputStream outputStream = new FileOutputStream("temp.xlsx");
+        OutputStream outputStream = new FileOutputStream(FILE_NAME);
 
         //when
         excelMate.download("sheetName", UserDto.class, exampleList, outputStream);
