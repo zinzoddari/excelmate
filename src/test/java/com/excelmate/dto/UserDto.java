@@ -5,17 +5,17 @@ import com.excelmate.domain.ExcelHeader;
 
 public class UserDto {
 
-    @ExcelHeader("아이디")
+    @ExcelHeader(value = "아이디", bold = true)
     private String id;
 
-    @ExcelHeader("이메일")
+    @ExcelHeader(value = "이메일", bold = true)
     private String email;
 
     @ExcelFont(bold = true)
     @ExcelHeader("이름")
     private String name;
 
-    @ExcelHeader("핸드폰 번호")
+    @ExcelHeader(value = "핸드폰 번호", bold = true)
     private String phone;
 
     public UserDto(String id, String email, String name, String phone) {

@@ -1,35 +1,45 @@
 package com.excelmate;
 
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
-
+import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.OutputStream;
 import java.util.List;
 
 public final class ExcelMate {
 
-    /**
-     * 엑셀을 파일로 다운로드합니다.
-     */
-    public static <T> void download(final String fileName, final String sheetName, final List<T> data) throws IOException {
-        final byte[] content = SheetMate.generate(sheetName, data);
-
-        try (FileOutputStream fileOut = new FileOutputStream(fileName + ".xlsx")) {
-            fileOut.write(content);
-        }
+    public <T> void download(final String sheetName, final Class<T> tClass, final List<T> data, OutputStream outputStream) throws IOException {
+        create(sheetName, tClass, data, outputStream);
     }
 
-    public static <T> ResponseEntity<byte[]> httpDownload(final String fileName, final String sheetName, final List<T> data) throws IOException {
-        final byte[] content = SheetMate.generate(sheetName, data);
+    public <T> String download(final String sheetName, final Class<T> tClass, final List<T> data) throws IOException {
+        final String tempDirPath = System.getProperty("java.io.tmpdir") + "excelmate";
+        final File tempDir = new File(tempDirPath);
 
-        HttpHeaders headers = new HttpHeaders();
-        headers.setContentType(MediaType.APPLICATION_OCTET_STREAM);
-        headers.setContentDispositionFormData("attachment", fileName);
+        if (!tempDir.exists()) {
+            boolean result = tempDir.mkdir();
+            if (!result) {
+                throw new IOException("디렉터리 생성 중 오류 발생");
+            }
+        }
 
-        // 응답 객체 생성
-        return new ResponseEntity<>(content, headers, HttpStatus.OK);
+        File tempFile = File.createTempFile("temp-", ".xlsx", tempDir);
+
+        OutputStream outputStream = new FileOutputStream(tempFile);
+
+        create(sheetName, tClass, data, outputStream);
+
+        return tempFile.getPath();
+    }
+
+    public void removeTempFile(final String path) {
+        final File tempDir = new File(path);
+
+        tempDir.delete();
+    }
+
+    private <T> void create(final String sheetName, final Class<T> tClass, final List<T> data, OutputStream outputStream) throws IOException {
+        final SheetMate sheetMate = new SheetMate(tClass, data);
+        sheetMate.generate(sheetName, outputStream);
     }
 }
